@@ -1,65 +1,76 @@
-# Typing Speed Test - Python Tkinter Application
+# Typing Speed Test Application
 
-This project is a desktop-based Typing Speed Test application built with Python and Tkinter. It is designed to help users practice and improve their typing skills through progressive levels of difficulty and provides a structured and user-friendly interface.
+## Overview
+
+This is a Python-based GUI application developed using Tkinter to help users practice and test their typing speed and accuracy. The program guides the user through different levels of difficulty (sentences, paragraphs, and timed tests) and tracks progress, accuracy, and speed.
 
 ## Features
 
-•⁠  ⁠Three typing stages: Sentence Practice, Paragraph Practice, and Timed Test
-•⁠  ⁠Requires 100% accuracy to proceed to the next sentence
-•⁠  ⁠Real-time feedback using color indicators (green for correct, red for incorrect)
-•⁠  ⁠Manual "Next Sentence" control to proceed
-•⁠  ⁠Retry prompt for incorrect sentences
-•⁠  ⁠Timer for the final stage (75 seconds duration)
-•⁠  ⁠Visual cursor support for easier text correction
-•⁠  ⁠Copy-paste and right-click context menu are disabled to ensure fair typing practice
-•⁠  ⁠Final congratulatory message after successful completion of the timed test
-•⁠  ⁠Options to restart or end the test after completion
-•⁠  ⁠Reset progress functionality to return to beginner stage
+### User Journey & Stage Selection
+- At launch, the user selects whether to begin with **sentences** or **paragraphs**.
+- If **sentences** are selected, another choice is shown: **short** or **long** sentences.
+- Based on selection:
+  - **Short Sentences** Path: 4 stages
+    1. Short Sentences (10 sentences)
+    2. Long Sentences (4 sentences)
+    3. Paragraphs (6–7 paragraphs)
+    4. Timed Paragraphs (6–7 with 100-second timer each)
+  - **Long Sentences** Path: 3 stages
+    1. Long Sentences (10 sentences)
+    2. Paragraphs (6–7 paragraphs)
+    3. Timed Paragraphs (6–7 with 100-second timer each)
 
-## Project Structure
+### Test Logic & Typing Interaction
+- Timer starts automatically during timed stages.
+- Real-time color-coded feedback (Green for correct, Red for incorrect).
+- Disables copy/paste functionality including right-click on Windows/macOS.
+- Users can use the cursor to edit incorrect parts manually.
+- Test only progresses after clicking **Next Sentence**.
+- Mandatory 100% accuracy to proceed is removed. Users may advance with any accuracy.
 
+### Progress & Feedback
+- Progress Tracker is visible at the top-left corner, showing stage progress.
+- Real-time timer display during timed mode.
+- At the end of the test:
+  - Shows average WPM (Words Per Minute) and average accuracy.
+  - Pop-up message:
+    - If passed with high accuracy: “Congratulations, you have passed the typing test!”
+    - If not: “You did well, but you should practice more.”
 
-TypingSpeedTest/files:
-----main.py             # Main GUI application logic
-----sentences.txt       # Sentences used for the beginner stage
-----paragraphs.txt      # Paragraphs used for paragraph and timed stages
-----README.md           # Documentation
+### Interactive Prompts
+- Upon selecting **Start**, prompts guide users through the selection path.
+- An explanation box appears describing all stages based on the chosen path.
 
+## Technologies Used
+- Python
+- Tkinter
 
-## How to Run
+## File Structure
+- `main.py` – Main GUI application
+- `sentences.txt` – Contains short practice sentences
+- `long_sentences.txt` – Contains long-form sentences
+- `paragraphs.txt` – Contains paragraphs for paragraph-based and timed tests
 
-### Prerequisites
+## Setup Instructions
 
-•⁠  ⁠Python 3.6 or higher
-•⁠  ⁠Tkinter (usually bundled with Python)
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/typing-speed-test.git
+   cd typing-speed-test
+   ```
 
-### Steps
+2. Ensure you have Python 3 installed.
 
-1.⁠ ⁠Download or clone the repository.
-2.⁠ ⁠Ensure that ⁠ main.py ⁠, ⁠ sentences.txt ⁠, and ⁠ paragraphs.txt ⁠ are in the same directory.
-3.⁠ ⁠Open a terminal and navigate to the project folder.
-4.⁠ ⁠Run the application:
+3. Install Tkinter (if not already installed):
+   ```bash
+   pip install tk
+   ```
 
-⁠ bash
-python main.py
- ⁠
-
-## Usage
-
-1.⁠ ⁠Click the *Start* button to begin.
-2.⁠ ⁠Type the displayed sentence or paragraph exactly as shown.
-3.⁠ ⁠Use the *Check* button to validate your typing.
-4.⁠ ⁠If the typed content is correct, you can use the *Next Sentence* button to continue.
-5.⁠ ⁠Incorrect typing will prompt a message to try again.
-6.⁠ ⁠After completing the final (timed) stage, a congratulatory message will appear.
-7.⁠ ⁠You may then choose to restart the test or exit.
-
-## Notes
-
-•⁠  ⁠The application strictly requires 100% accuracy before allowing users to proceed.
-•⁠  ⁠The timer only activates in the final stage.
-•⁠  ⁠Copying, pasting, and right-click operations are disabled to promote honest practice.
+4. Run the app:
+   ```bash
+   python main.py
+   ```
 
 ## Author
 
-Developed by SNEHA GUPTA
+Developed by Sneha Gupta
