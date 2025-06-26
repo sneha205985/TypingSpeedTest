@@ -20,7 +20,7 @@ class TypingApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Typing Speed Test")
-        self.root.geometry("800x550")
+        self.root.geometry("820x570")
         self.root.configure(bg="white")
 
         self.practice_count = 0
@@ -34,8 +34,13 @@ class TypingApp:
         self.correctly_typed = False
         self.congrats_shown = False
 
+        # Progress Label (Top-Left Corner)
+        self.progress_label = tk.Label(root, text="", font=("Helvetica", 12), fg="black", bg="white", anchor='w')
+        self.progress_label.place(x=10, y=10)
+        self.update_progress_label()
+
         self.title_label = tk.Label(root, text="Typing Speed Test", font=("Helvetica", 20, "bold"), bg="white")
-        self.title_label.pack(pady=10)
+        self.title_label.pack(pady=35)
 
         self.display = tk.Text(root, height=5, width=90, font=("Courier", 14), wrap=tk.WORD, bg="white", fg="blue")
         self.display.pack(pady=10)
@@ -45,6 +50,7 @@ class TypingApp:
         self.entry.config(insertbackground="black")
         self.entry.pack()
         self.entry.bind("<KeyRelease>", self.on_typing)
+        self.entry.bind("<Return>",lambda e: self.end_test())
 
         # Disable copy-paste
         for seq in ("<Control-v>", "<Control-V>", "<Command-v>", "<Command-V>",
@@ -73,6 +79,12 @@ class TypingApp:
         self.result_label = tk.Label(root, text="", font=("Helvetica", 14), fg="green", bg="white")
         self.result_label.pack(pady=10)
 
+    def update_progress_label(self):
+        self.progress_label.config(
+            text=f"Stage: {self.stage.capitalize()} | Sentences: {self.practice_count}/{BEGINNER_LIMIT} | "
+                 f"Paragraphs: {self.paragraph_count}/{PARAGRAPH_LIMIT} | Timed: {self.timed_count}/{TIMED_LIMIT}"
+        )
+
     def get_next_text(self):
         return random.choice(SENTENCES) if self.stage == "beginner" else random.choice(PARAGRAPHS)
 
@@ -89,6 +101,7 @@ class TypingApp:
         self.display.config(state=tk.DISABLED)
         self.start_time = time.time()
         self.result_label.config(text="")
+        self.update_progress_label()
         if self.stage == "timed":
             self.remaining_time = TIMER_DURATION
             self.timer_running = True
@@ -118,15 +131,14 @@ class TypingApp:
         accuracy = round((correct / len(self.text_to_type)) * 100)
 
         self.result_label.config(text=f"Time: {int(elapsed)}s | WPM: {wpm} | Accuracy: {accuracy}%")
-        self.entry.config(state=tk.DISABLED)
 
         if accuracy < 100:
             self.correctly_typed = False
-            messagebox.showwarning("Try Again", "Please type the sentence exactly as shown to proceed.")
-            self.entry.config(state=tk.NORMAL)
+            messagebox.showwarning("Try Again")
             return
         else:
             self.correctly_typed = True
+            self.entry.config(state=tk.DISABLED)
 
         if self.stage == "beginner":
             self.practice_count += 1
@@ -144,16 +156,18 @@ class TypingApp:
             self.timed_count += 1
             if self.timed_count >= TIMED_LIMIT and not self.congrats_shown:
                 self.congrats_shown = True
-                response = messagebox.askquestion("🎉 Congratulations!", 
+                response = messagebox.askquestion("🎉 Congratulations!",
                     "🎉 Congratulations, you have passed the typing test!\nYou are good in typing now.\n\nDo you want to restart the test?")
                 if response == "yes":
                     self.reset_progress()
                 else:
                     self.root.destroy()
 
+        self.update_progress_label()
+
     def next_sentence(self):
         if not self.correctly_typed:
-            messagebox.showwarning("Not Allowed", "Please check the correctness of sentence before proceeding.")
+            messagebox.showwarning("Not Allowed", "Please type the correct sentence before proceeding.")
             return
         self.start_test()
 
@@ -180,6 +194,7 @@ class TypingApp:
         self.display.config(state=tk.NORMAL)
         self.display.delete("1.0", tk.END)
         self.display.config(state=tk.DISABLED)
+        self.update_progress_label()
         messagebox.showinfo("Reset", "Progress reset. You're back to beginner level.")
 
 if __name__ == "__main__":
