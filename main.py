@@ -1,32 +1,35 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 import random
 import time
 
-# Load sentences
+# Load short sentences
 with open("sentences.txt", "r") as f:
-    SENTENCES = [line.strip() for line in f if line.strip()]
+    SHORT_SENTENCES = [line.strip() for line in f if line.strip()]
+
+# Load long sentences
+with open("LongSentences.txt", "r") as f:
+    LONG_SENTENCES = [line.strip() for line in f if line.strip()]
 
 # Load paragraphs
 with open("paragraphs.txt", "r") as f:
     PARAGRAPHS = [para.strip() for para in f.read().split("\n\n") if para.strip()]
 
-BEGINNER_LIMIT = 5
-PARAGRAPH_LIMIT = 3
-TIMED_LIMIT = 4
-TIMER_DURATION = 75  # for stage 3
+SENTENCE_LIMIT = 10
+LongSentence_Limit=4
+PARAGRAPH_LIMIT = 6
+TIMED_LIMIT = 7
+TIMER_DURATION = 110  # for stage 4
 
 class TypingApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Typing Speed Test")
-        self.root.geometry("820x570")
+        self.root.geometry("850x600")
         self.root.configure(bg="white")
 
-        self.practice_count = 0
-        self.paragraph_count = 0
-        self.timed_count = 0
-        self.stage = "beginner"
+        self.stage = None
+        self.path = []
         self.text_to_type = ""
         self.start_time = None
         self.timer_running = False
@@ -34,23 +37,26 @@ class TypingApp:
         self.correctly_typed = False
         self.congrats_shown = False
 
-        # Progress Label (Top-Left Corner)
-        self.progress_label = tk.Label(root, text="", font=("Helvetica", 12), fg="black", bg="white", anchor='w')
+        self.short_count = 0
+        self.long_count = 0
+        self.para_count = 0
+        self.timed_count = 0
+
+        self.total_stages = 0
+        self.progress_label = tk.Label(root, text="", font=("Helvetica", 12), fg="black", bg="white")
         self.progress_label.place(x=10, y=10)
-        self.update_progress_label()
 
         self.title_label = tk.Label(root, text="Typing Speed Test", font=("Helvetica", 20, "bold"), bg="white")
-        self.title_label.pack(pady=35)
+        self.title_label.pack(pady=10)
 
         self.display = tk.Text(root, height=5, width=90, font=("Courier", 14), wrap=tk.WORD, bg="white", fg="blue")
         self.display.pack(pady=10)
         self.display.config(state=tk.DISABLED)
 
-        self.entry = tk.Text(root, height=5, width=90, font=("Courier", 14), wrap=tk.WORD, bg="white", fg="black")
-        self.entry.config(insertbackground="black")
+        self.entry = tk.Text(root, height=5, width=90, font=("Courier", 14), wrap=tk.WORD, bg="white", fg="black", insertbackground="black")
         self.entry.pack()
         self.entry.bind("<KeyRelease>", self.on_typing)
-        self.entry.bind("<Return>",lambda e: self.end_test())
+        self.entry.bind("<Return>", lambda e: self.end_test())
 
         # Disable copy-paste
         for seq in ("<Control-v>", "<Control-V>", "<Command-v>", "<Command-V>",
@@ -64,33 +70,49 @@ class TypingApp:
         self.button_frame = tk.Frame(root, bg="white")
         self.button_frame.pack(pady=10)
 
-        self.start_button = tk.Button(self.button_frame, text="Start", command=self.start_test, width=12)
+        self.start_button = tk.Button(self.button_frame, text="Start", command=self.begin_test, width=12)
         self.start_button.grid(row=0, column=0, padx=10)
 
         self.check_button = tk.Button(self.button_frame, text="Check", command=self.end_test, width=12)
         self.check_button.grid(row=0, column=1, padx=10)
 
-        self.reset_button = tk.Button(self.button_frame, text="Reset Progress", command=self.reset_progress, width=15)
+        self.reset_button = tk.Button(self.button_frame, text="Reset", command=self.reset_progress, width=12)
         self.reset_button.grid(row=0, column=2, padx=10)
 
-        self.next_button = tk.Button(self.button_frame, text="Next Sentence", command=self.next_sentence, width=15)
+        self.next_button = tk.Button(self.button_frame, text="Next", command=self.next_sentence, width=12)
         self.next_button.grid(row=0, column=3, padx=10)
 
         self.result_label = tk.Label(root, text="", font=("Helvetica", 14), fg="green", bg="white")
         self.result_label.pack(pady=10)
 
-    def update_progress_label(self):
-        self.progress_label.config(
-            text=f"Stage: {self.stage.capitalize()} | Sentences: {self.practice_count}/{BEGINNER_LIMIT} | "
-                 f"Paragraphs: {self.paragraph_count}/{PARAGRAPH_LIMIT} | Timed: {self.timed_count}/{TIMED_LIMIT}"
-        )
+    def begin_test(self):
+        initial_choice = messagebox.askquestion("Start Test", "Do you want to begin with sentences?")
+        if initial_choice == "yes":
+            style = messagebox.askquestion("Sentence Type", "Do you want to start with short sentences?")
+            if style == "yes":
+                self.path = ["short", "long", "paragraph", "timed"]
+                messagebox.showinfo("Test Plan", 
+                    "This test includes 4 stages:\n1. Short Sentences (10)\n2. Long Sentences (4)\n3. Paragraphs (6-7)\n4. Timed Paragraphs (6-7)")
+            else:
+                self.path = ["long", "paragraph", "timed"]
+                messagebox.showinfo("Test Plan", 
+                    "This test includes 3 stages:\n1. Long Sentences (10)\n2. Paragraphs (6-7)\n3. Timed Paragraphs (6-7)")
+        else:
+            self.path = ["paragraph", "timed"]
+            messagebox.showinfo("Test Plan", 
+                "This test includes 2 stages:\n1. Paragraphs (6-7)\n2. Timed Paragraphs (6-7)")
+        self.stage = self.path[0]
+        self.start_test()
 
     def get_next_text(self):
-        return random.choice(SENTENCES) if self.stage == "beginner" else random.choice(PARAGRAPHS)
+        if self.stage == "short":
+            return random.choice(SHORT_SENTENCES)
+        elif self.stage == "long":
+            return random.choice(LONG_SENTENCES)
+        else:
+            return random.choice(PARAGRAPHS)
 
     def start_test(self):
-        if self.stage == "timed" and self.timed_count >= TIMED_LIMIT:
-            return
         self.correctly_typed = False
         self.entry.config(state=tk.NORMAL)
         self.entry.delete("1.0", tk.END)
@@ -101,11 +123,11 @@ class TypingApp:
         self.display.config(state=tk.DISABLED)
         self.start_time = time.time()
         self.result_label.config(text="")
-        self.update_progress_label()
         if self.stage == "timed":
             self.remaining_time = TIMER_DURATION
             self.timer_running = True
             self.update_timer()
+        self.update_progress()
 
     def on_typing(self, event):
         typed_text = self.entry.get("1.0", tk.END).strip()
@@ -113,62 +135,46 @@ class TypingApp:
         self.display.tag_remove("incorrect", "1.0", tk.END)
         for i, char in enumerate(typed_text):
             if i < len(self.text_to_type):
-                if char == self.text_to_type[i]:
-                    self.display.tag_add("correct", f"1.{i}", f"1.{i+1}")
-                else:
-                    self.display.tag_add("incorrect", f"1.{i}", f"1.{i+1}")
+                tag = "correct" if char == self.text_to_type[i] else "incorrect"
+                self.display.tag_add(tag, f"1.{i}", f"1.{i+1}")
         self.display.tag_config("correct", foreground="green")
         self.display.tag_config("incorrect", foreground="red")
 
     def end_test(self):
         self.timer_running = False
-        end_time = time.time()
-        elapsed = max(end_time - self.start_time, 1)
+        elapsed = max(time.time() - self.start_time, 1)
         typed = self.entry.get("1.0", tk.END).strip()
-        word_count = len(typed.split())
-        wpm = round((word_count / elapsed) * 60)
+        wpm = round((len(typed.split()) / elapsed) * 60)
         correct = sum(1 for i in range(min(len(typed), len(self.text_to_type))) if typed[i] == self.text_to_type[i])
         accuracy = round((correct / len(self.text_to_type)) * 100)
-
         self.result_label.config(text=f"Time: {int(elapsed)}s | WPM: {wpm} | Accuracy: {accuracy}%")
+        self.entry.config(state=tk.DISABLED)
+        self.correctly_typed = True
 
-        if accuracy < 100:
-            self.correctly_typed = False
-            messagebox.showwarning("Try Again")
-            return
-        else:
-            self.correctly_typed = True
-            self.entry.config(state=tk.DISABLED)
-
-        if self.stage == "beginner":
-            self.practice_count += 1
-            if self.practice_count >= BEGINNER_LIMIT:
+        if self.stage == "short":
+            self.short_count += 1
+            if self.short_count >= 10:
+                self.stage = "long"
+        elif self.stage == "long":
+            self.long_count += 1
+            if self.long_count >= 4:
                 self.stage = "paragraph"
-                messagebox.showinfo("Level Up", "You've completed beginner level!")
-
         elif self.stage == "paragraph":
-            self.paragraph_count += 1
-            if self.paragraph_count >= PARAGRAPH_LIMIT:
+            self.para_count += 1
+            if self.para_count >= 6:
                 self.stage = "timed"
-                messagebox.showinfo("Level Up", "Now entering timed mode!")
-
         elif self.stage == "timed":
             self.timed_count += 1
-            if self.timed_count >= TIMED_LIMIT and not self.congrats_shown:
-                self.congrats_shown = True
-                response = messagebox.askquestion("🎉 Congratulations!",
-                    "🎉 Congratulations, you have passed the typing test!\nYou are good in typing now.\n\nDo you want to restart the test?")
-                if response == "yes":
-                    self.reset_progress()
+            if self.timed_count >= 6:
+                if accuracy == 100:
+                    messagebox.showinfo("Congratulations", "You have successfully passed the test!")
                 else:
-                    self.root.destroy()
+                    messagebox.showinfo("Keep Practicing", f"You couldn't complete the test within the time limit.\nNeed to speed up your typing.")
+                self.reset_progress()
 
-        self.update_progress_label()
+        self.update_progress()
 
     def next_sentence(self):
-        if not self.correctly_typed:
-            messagebox.showwarning("Not Allowed", "Please type the correct sentence before proceeding.")
-            return
         self.start_test()
 
     def update_timer(self):
@@ -180,22 +186,25 @@ class TypingApp:
             self.timer_label.config(text="Time's up!")
             self.end_test()
 
+    def update_progress(self):
+        text = f"Progress â Short: {self.short_count}/10 | Long: {self.long_count}/4 | Para: {self.para_count}/6 | Timed: {self.timed_count}/6"
+        self.progress_label.config(text=text)
+
     def reset_progress(self):
-        self.practice_count = 0
-        self.paragraph_count = 0
+        self.short_count = 0
+        self.long_count = 0
+        self.para_count = 0
         self.timed_count = 0
-        self.stage = "beginner"
-        self.correctly_typed = False
-        self.congrats_shown = False
+        self.stage = None
+        self.path = []
         self.result_label.config(text="")
         self.timer_label.config(text="")
-        self.entry.config(state=tk.NORMAL)
-        self.entry.delete("1.0", tk.END)
         self.display.config(state=tk.NORMAL)
         self.display.delete("1.0", tk.END)
         self.display.config(state=tk.DISABLED)
-        self.update_progress_label()
-        messagebox.showinfo("Reset", "Progress reset. You're back to beginner level.")
+        self.entry.config(state=tk.NORMAL)
+        self.entry.delete("1.0", tk.END)
+        self.progress_label.config(text="")
 
 if __name__ == "__main__":
     root = tk.Tk()
