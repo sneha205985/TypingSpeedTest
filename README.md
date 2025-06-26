@@ -1,92 +1,65 @@
-# 🧠 Typing Speed Test (Python + Tkinter)
+# Typing Speed Test - Python Tkinter Application
 
-A feature-rich *Typing Speed Test* application built using Python and Tkinter. It allows users to enhance their typing skills through a structured 3-stage approach: Sentence Practice, Paragraph Practice, and Timed Typing Test. The project enforces *100% accuracy*, tracks progress, and offers real-time visual feedback — all through an intuitive graphical user interface.
+This project is a desktop-based Typing Speed Test application built with Python and Tkinter. It is designed to help users practice and improve their typing skills through progressive levels of difficulty and provides a structured and user-friendly interface.
 
----
+## Features
 
-## ✨ Features
+•⁠  ⁠Three typing stages: Sentence Practice, Paragraph Practice, and Timed Test
+•⁠  ⁠Requires 100% accuracy to proceed to the next sentence
+•⁠  ⁠Real-time feedback using color indicators (green for correct, red for incorrect)
+•⁠  ⁠Manual "Next Sentence" control to proceed
+•⁠  ⁠Retry prompt for incorrect sentences
+•⁠  ⁠Timer for the final stage (75 seconds duration)
+•⁠  ⁠Visual cursor support for easier text correction
+•⁠  ⁠Copy-paste and right-click context menu are disabled to ensure fair typing practice
+•⁠  ⁠Final congratulatory message after successful completion of the timed test
+•⁠  ⁠Options to restart or end the test after completion
+•⁠  ⁠Reset progress functionality to return to beginner stage
 
-•⁠  ⁠🎯 *3-Stage Typing Practice*: Sentence → Paragraph → Timed (75 seconds)
-•⁠  ⁠✅ Requires *100% accuracy* before proceeding
-•⁠  ⁠🔁 *Retry option* if the sentence is incorrect
-•⁠  ⁠🧠 Smart stage progression with pop-ups
-•⁠  ⁠🕒 Countdown Timer in timed mode (Stage 3)
-•⁠  ⁠🟢 Correct characters turn *green*
-•⁠  ⁠🔴 Incorrect characters turn *red*
-•⁠  ⁠⛔ *Copy-Paste is disabled* to ensure fair typing
-•⁠  ⁠🔓 Cursor enabled for easy error correction
-•⁠  ⁠🎉 Final *Congratulations* message upon test completion
-•⁠  ⁠🔄 *Reset Progress* button
-•⁠  ⁠🧭 *Start, **Check, **Next Sentence, and **Reset* controls
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 
-TypingSpeedTest/
-│
-├── main.py             # Main application code
-├── sentences.txt       # Beginner level practice sentences
-├── paragraphs.txt      # Paragraphs for intermediate & timed levels
-└── README.md           # Project documentation (this file)
+TypingSpeedTest/files:
+----main.py             # Main GUI application logic
+----sentences.txt       # Sentences used for the beginner stage
+----paragraphs.txt      # Paragraphs used for paragraph and timed stages
+----README.md           # Documentation
 
 
----
+## How to Run
 
-## 🚀 How to Run
+### Prerequisites
 
-### 🧰 Prerequisites
-Ensure you have Python 3.x installed.
+•⁠  ⁠Python 3.6 or higher
+•⁠  ⁠Tkinter (usually bundled with Python)
 
-### ▶️ Steps to Run:
-1.⁠ ⁠*Clone this repository* or download it as a ZIP and extract it.
-2.⁠ ⁠Open Terminal and navigate to the project folder:
-   ⁠ bash
-   cd path/to/TypingSpeedTest
-    ⁠
-3.⁠ ⁠Run the app using:
-   ⁠ bash
-   python3 main.py
-    ⁠
+### Steps
 
----
+1.⁠ ⁠Download or clone the repository.
+2.⁠ ⁠Ensure that ⁠ main.py ⁠, ⁠ sentences.txt ⁠, and ⁠ paragraphs.txt ⁠ are in the same directory.
+3.⁠ ⁠Open a terminal and navigate to the project folder.
+4.⁠ ⁠Run the application:
 
-## 📌 Usage Instructions
+⁠ bash
+python main.py
+ ⁠
 
-•⁠  ⁠Click *Start* to begin the typing test.
-•⁠  ⁠Type the given sentence *exactly as shown*.
-•⁠  ⁠Click *Check* to validate your input.
-  - If correct → proceed by clicking *Next Sentence*.
-  - If incorrect → pop-up asks you to try again.
-•⁠  ⁠Once beginner and paragraph stages are passed, the *timed test* begins.
-•⁠  ⁠On finishing the timed test with full accuracy, a pop-up will display:
-  - ⁠ Congratulations, you have passed the typing speed test! You are good in typing now. ⁠
-  - Then choose to *End Test* or *Restart*.
+## Usage
 
----
+1.⁠ ⁠Click the *Start* button to begin.
+2.⁠ ⁠Type the displayed sentence or paragraph exactly as shown.
+3.⁠ ⁠Use the *Check* button to validate your typing.
+4.⁠ ⁠If the typed content is correct, you can use the *Next Sentence* button to continue.
+5.⁠ ⁠Incorrect typing will prompt a message to try again.
+6.⁠ ⁠After completing the final (timed) stage, a congratulatory message will appear.
+7.⁠ ⁠You may then choose to restart the test or exit.
 
-## 🔒 Security Features
+## Notes
 
-•⁠  ⁠❌ Right-click is disabled (prevents copying)
-•⁠  ⁠❌ Paste is disabled (Ctrl+V / Cmd+V)
-•⁠  ⁠🚫 Cannot proceed without full sentence accuracy
+•⁠  ⁠The application strictly requires 100% accuracy before allowing users to proceed.
+•⁠  ⁠The timer only activates in the final stage.
+•⁠  ⁠Copying, pasting, and right-click operations are disabled to promote honest practice.
 
----
+## Author
 
-## 💡 Tips
-
-•⁠  ⁠Avoid rushing; focus on accuracy.
-•⁠  ⁠Use backspace to correct typing errors manually.
-•⁠  ⁠If stuck, reset progress and start over!
-
----
-
-## 👩‍💻 Author
-
-Made with 💻 by SNEHA GUPTA — built to improve real-world typing performance and focus!
-
----
-
-
-Happy Typing! 🎉
+Developed by SNEHA GUPTA
