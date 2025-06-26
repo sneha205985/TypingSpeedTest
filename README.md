@@ -18,7 +18,6 @@ A feature-rich *Typing Speed Test* application built using Python and Tkinter. I
 •⁠  ⁠🎉 Final *Congratulations* message upon test completion
 •⁠  ⁠🔄 *Reset Progress* button
 •⁠  ⁠🧭 *Start, **Check, **Next Sentence, and **Reset* controls
-•⁠  ⁠🔥 Hover effect (red background) on buttons
 
 ---
 
