@@ -44,7 +44,7 @@ class TypingApp:
 
         self.total_stages = 0
         self.progress_label = tk.Label(root, text="", font=("Helvetica", 12), fg="black", bg="white")
-        self.progress_label.place(x=10, y=10)
+        #self.progress_label.place(x=10, y=10)
 
         self.title_label = tk.Label(root, text="Typing Speed Test", font=("Helvetica", 20, "bold"), bg="white")
         self.title_label.pack(pady=10)
@@ -81,6 +81,8 @@ class TypingApp:
 
         self.next_button = tk.Button(self.button_frame, text="Next", command=self.next_sentence, width=12)
         self.next_button.grid(row=0, column=3, padx=10)
+
+        self.progress_label.pack(pady=5)
 
         self.result_label = tk.Label(root, text="", font=("Helvetica", 14), fg="green", bg="white")
         self.result_label.pack(pady=10)
