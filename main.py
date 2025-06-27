@@ -43,7 +43,7 @@ class TypingApp:
         self.timed_count = 0
 
         self.total_stages = 0
-        self.progress_label = tk.Label(root, text="", font=("Helvetica", 12), fg="black", bg="white")
+        self.progress_label = tk.Label(root, text="", font=("Helvetica", 24), fg="black", bg="white")
         #self.progress_label.place(x=10, y=10)
 
         self.title_label = tk.Label(root, text="Typing Speed Test", font=("Helvetica", 20, "bold"), bg="white")
